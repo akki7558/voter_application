@@ -814,7 +814,17 @@ function toggleVoted(id,btn,checked){
     const sc=$$(".stat b"); if(sc.length>3){ const d=votedCount(),n=S.voters.length; sc[1].textContent=d; sc[2].textContent=n-d; sc[3].textContent=(n?d*100/n:0).toFixed(1); }
   }
 }
-nt.documentElement.lang=v; render(); break;
+document.addEventListener("click",async e=>{
+  if(e.target.id==="modal"){ closeModal(); return; }
+  const el=e.target.closest("[data-a]"); if(!el||el.tagName==="INPUT") return;
+  const a=el.dataset.a, v=el.dataset.v;
+  if(!/^print/.test(a)) document.body.classList.remove("pm");
+  const cur=()=>S.voters.find(x=>x.id===v);
+  switch(a){
+    case "key": pinDigit(v); break;
+    case "keyDel": S.pinBuf=S.pinBuf.slice(0,-1); updateDots(); break;
+    case "keyOk": tryPin(true); break;
+    case "lang": S.lang=v; LS.set("cp_lang",v); document.documentElement.lang=v; render(); break;
     case "theme": S.theme=S.theme==="dark"?"light":"dark"; LS.set("cp_theme",S.theme); applyTheme(); break;
     case "lock": lockApp(); break;
     case "view": S.view=v; render(); window.scrollTo({top:0}); break;
